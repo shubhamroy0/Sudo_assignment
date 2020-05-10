@@ -1,0 +1,2 @@
+Instances of this class support both reading and writing to a random access file. 
+A random access file behaves like a large array of bytes stored in the file system. 

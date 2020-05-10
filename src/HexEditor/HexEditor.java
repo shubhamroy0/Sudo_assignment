@@ -1,4 +1,6 @@
 package HexEditor;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.lang.*;
 import java.text.DecimalFormat; 
 
@@ -23,7 +25,8 @@ public class HexEditor {
 //		System.out.println(formatSize(x));
 //		long y = Long.parseLong("9585631");
 //		System.out.println(formatSize(y));
-		printHexTable(7);
+		RandomAccessFile raf= new RandomAccessFile("DAT_files/a.dat","rw");
+		printHexTableWithFile(raf ,5);
 	}
 	public static String formatSize(long sizeInBytes) {
 		String rep[] = {"bytes","KiB","MiB","GiB","TiB","PiB","EiB"};
@@ -38,14 +41,52 @@ public class HexEditor {
 		return Finalnum;
 	}
 	public static void printHexTable(int rownum) {
-		System.out.printf("  H |");
-		for(int i=0;i<16;i++) {
-			System.out.printf(" %02X |", i);
+		for (int i=rownum;i<=(16+rownum);i++) {
+			for (int j=0;j<=16;j++) {
+				if (i == rownum) {
+					System.out.printf((j == 0) ? "  H |" : " %02X |", (j-1));
+				} else {
+					if(j == 0) {
+						System.out.printf(" %02X |",(i-1));
+					}
+				}
+			}
+			if(i == rownum) {
+				System.out.println("\n-------------------------------------------------------------------------------------");
+			} else {
+				System.out.println();
+			}
 		}
-		
-		System.out.println("\n-------------------------------------------------------------------------------------");
-		for(int i=rownum;i<(rownum + 16);i++) {
-			System.out.printf(" %02X | \n", i);
+	}
+	
+	public static void printHexTableWithFile(RandomAccessFile datFile,int rownum) throws IOException {
+		datFile.seek(rownum *16);
+		int byteExtracted = 0;
+		for (int i=rownum;i<=(16+rownum);i++) {
+			for (int j=0;j<=16;j++) {
+				if (i == rownum) {
+					System.out.printf((j == 0) ? "  H |" : " %02X |", (j-1));
+				} else {
+					if(j == 0) {
+						System.out.printf(" %02X |",((i-1)*16));
+					} else {
+						byteExtracted = datFile.read();
+						if(byteExtracted == -1) {
+							System.out.printf("     ");
+						}
+						else {
+							System.out.printf(" %02X  ",byteExtracted);
+						}
+					}
+				}
+			}
+			if(i == rownum) {
+				System.out.println("\n-------------------------------------------------------------------------------------");
+			} else {
+				System.out.println();
+			}
 		}
+		System.out.printf("File size in decimal = %s", formatSize(datFile.length()));
+		System.out.printf("\nFile size in Hex = %X", datFile.length());
 	}
 }
