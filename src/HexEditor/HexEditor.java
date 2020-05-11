@@ -39,7 +39,7 @@ public class HexEditor {
 		//printHexTableWithFileInteraction(raf ,0,80L);
 		//interactiveDesign(raf,canEdit);
 		
-		if(findString(raf,"hackerman1337",0)) {
+		if(findStringReplace(raf,"hackerman1337",0,"20449667")) {
 			System.out.printf("Found");
 		} else {
 			System.out.printf("not Found");
@@ -212,6 +212,27 @@ public class HexEditor {
 			fil=datFile.read();
 			ref++;
 		}
+		return check;
+	}
+	public static boolean findStringReplace(RandomAccessFile datFile,String find,long startIndex,String replace) throws IOException {
+		datFile.seek(startIndex);
+		long ref = startIndex;
+		boolean check= false;
+		int fil = datFile.read();
+		byte findarray[] = find.getBytes();
+		while(fil != -1) {
+			check= findStringhex(datFile,fil,ref,findarray,0);
+			if(check)
+				break;
+			fil=datFile.read();
+			ref++;
+		}
+		byte[] repb = replace.getBytes();
+		for(int i = 0 ; i < repb.length ; i++) {
+			interactiveDesignWrite(datFile,ref,repb[i]);
+			ref++;
+		}
+		interactiveDesignWrite(datFile,ref,(byte)00);
 		return check;
 	}
 	public static void interactiveDesign(RandomAccessFile datFile,boolean canEdit) throws IOException {
